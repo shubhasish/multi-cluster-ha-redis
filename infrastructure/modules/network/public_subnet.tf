@@ -4,7 +4,7 @@ resource "aws_internet_gateway" "igw" {
   count  = signum(length(var.public_subnets))
 
   tags = {
-    Name        = "${var.env}-igw"
+    Name        = "${var.name}-igw"
     Environment = var.env
     managed_by  = "terraform"
   }

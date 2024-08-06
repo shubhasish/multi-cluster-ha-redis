@@ -39,20 +39,23 @@ This repository helps to deploys the redis in a high availability setup across t
 #### Resources
 | # | Name | Resource |
 | :---: | :---: | :---:|
-| 1 | eks-cluster | xyz|
-|2 | eks-cluster-node| abc|
-| 3 | vpc-cni-plugin | cvb |
-| 4 | ebs-csi-driver | dsd |
-| 5 | internet-gateway | dss|
-| 6 | nat-gateway | dsds |
-| 7 | rout 53 hosted zone| sdsds|
-| 8 | redis | dsds |
-| 9 | external dns | dsds
-|10 | Cloud Map MCS-Controller | fdfd | 
+| 1 | redis1-demo-cluster | first eks cluster |
+| 2 | redis2-demo-cluster | Second eks cluster |
+| 3 | redis1-node-group | node group for 1st cluster |
+| 4 | redis2-node-group | node group for 2nd cluster |
+| 5 | vpc-cni-plugin | EKS Add on |
+| 6 | ebs-csi-driver | EKS add on |
+| 7 | dev-vpc1-igw  | internet-gateway for 1st cluster |
+| 8 | dev-vpc2-igw  | internet-gateway for 2nd  cluster |
+| 9 | dev-vpc1-nat  | nat-gateway for 1st   cluster |
+| 10 | dev-vpc2-nat  | nat-gateway for 2nd   cluster |
+| 11 | redis-ha.internal | private route 53 hosted zone for redis-ha setup |
+|12 | redis MCS controller | Cloud Map MCS-Controller to enable closs cluster service discovery |
+| 13 | redis-nodes | runs in replication mode. One master and multiple plicas with sentinel
 
 #### Network
 | # | Name | Type  | Network config | 
-| :---: | :---: | :---:|
+| :---: | :---: | :---:| :---:|
 | 1 | eks-cluster | xyz|
 |2 | eks-cluster-node| abc|
 | 3 | vpc-cni-plugin | cvb |
@@ -63,8 +66,8 @@ This repository helps to deploys the redis in a high availability setup across t
 
 #### Permissions
 | # | Name | Service Account  | Permission | 
-| :---: | :---: | :---:|
-| 1 | eks-cluster | xyz|
+| :---: | :---: | :---:| :---:|
+| 1 | eks-cluster | xyz| sasas|
 |2 | eks-cluster-node| abc|
 | 3 | vpc-cni-plugin | cvb |
 | 4 | ebs-csi-driver | dsd |

@@ -49,7 +49,7 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = "${element(aws_subnet.public.*.id, count.index)}"
   count         = var.nat_gateways_count
   tags = {
-    Name        = "${var.env}-nat"
+    Name        = "${var.name}-nat"
     Environment = var.env
   }
 }
