@@ -1,0 +1,302 @@
+global:
+  storageClass: "gp2"
+  redis:
+    password: ""
+
+## @param clusterDomain Kubernetes cluster domain name
+##
+clusterDomain: cluster.local
+## @param extraDeploy Array of extra objects to deploy with the release
+##
+extraDeploy: []
+## @param useHostnames Use hostnames internally when announcing replication. If false, the hostname will be resolved to an IP address
+##
+useHostnames: true
+## @param nameResolutionThreshold Failure threshold for internal hostnames resolution
+##
+nameResolutionThreshold: 5
+## @param nameResolutionTimeout Timeout seconds between probes for internal hostnames resolution
+##
+nameResolutionTimeout: 5
+## Enable diagnostic mode in the deployment
+##
+diagnosticMode:
+  ## @param diagnosticMode.enabled Enable diagnostic mode (all probes will be disabled and the command will be overridden)
+  ##
+  enabled: false
+  ## @param diagnosticMode.command Command to override all containers in the deployment
+  ##
+  command:
+    - sleep
+  ## @param diagnosticMode.args Args to override all containers in the deployment
+  ##
+  args:
+    - infinity
+
+image:
+  registry: docker.io
+  repository: bitnami/redis
+  tag: 7.2.5-debian-12-r4
+
+## @param architecture Redis&reg; architecture. Allowed values: `standalone` or `replication`
+##
+architecture: replication
+
+auth:
+  enabled: true
+  sentinel: true
+  existingSecret: "redis-secret"
+  existingSecretPasswordKey: "redis_password"
+  usePasswordFiles: false
+  usePasswordFileFromSecret: true
+
+
+master:
+  count: 1
+  revisionHistoryLimit: 10
+  disableCommands:
+    - FLUSHDB
+    - FLUSHALL
+  extraFlags: []
+
+  # extraEnvVars:
+  #   - name: FOO
+  #     value: "bar"
+
+  extraEnvVarsCM: ""
+  ## @param master.extraEnvVarsSecret Name of existing Secret containing extra env vars for Redis&reg; master nodes
+  ##
+  extraEnvVarsSecret: ""
+  ## @param master.containerPorts.redis Container port to open on Redis&reg; master nodes
+  ##
+  containerPorts:
+    redis: 6379
+  # resources:
+  #   requests:
+  #     cpu: 2
+  #     memory: 512Mi
+  #   limits:
+  #     cpu: 3
+  #     memory: 1024Mi
+
+  kind: StatefulSet
+  updateStrategy:
+    type: RollingUpdate
+  ## dnsPolicy: ClusterFirst
+  ##
+  dnsPolicy: ""
+  dnsConfig: {}
+  lifecycleHooks: {}
+
+
+
+  persistence:
+    enabled: true
+    path: /data
+    accessModes:
+      - ReadWriteOnce
+    size: 8Gi
+    storageClass: "gp2"
+
+  service:
+    type: ClusterIP
+    portNames:
+      redis: "tcp-redis"
+    ports:
+      redis: 6379
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+
+  terminationGracePeriodSeconds: 30
+
+  serviceAccount:
+    create: true
+    name: ""
+
+## @section Redis&reg; replicas configuration parameters
+##
+replica:
+  kind: StatefulSet
+  replicaCount: 2
+  disableCommands:
+    - FLUSHDB
+    - FLUSHALL
+  extraEnvVars:
+    - name: FOO
+      value: "bar"
+  externalMaster:
+    enabled: false
+    host: ""
+    port: 6379
+  containerPorts:
+    redis: 6379
+  ## @param replica.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+  ## Example:
+  # resources:
+  #   requests:
+  #     cpu: 2
+  #     memory: 512Mi
+  #   limits:
+  #     cpu: 3
+  #     memory: 1024Mi
+  persistence:
+    enabled: true
+    path: /data
+    storageClass: "gp2"
+    accessModes:
+      - ReadWriteOnce
+    size: 8Gi
+  service:
+    type: ClusterIP
+    ports:
+      redis: 6379
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 11
+
+  serviceAccount:
+    create: true
+    name: ""
+
+sentinel:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnami/redis-sentinel
+    tag: 7.2.5-debian-12-r4
+    digest: ""
+  ## @param sentinel.masterSet Master set name
+  ##
+  masterSet: mymaster
+  ## @param sentinel.quorum Sentinel Quorum
+  ##
+  quorum: 2
+  ## @param sentinel.getMasterTimeout Amount of time to allow before get_sentinel_master_info() times out.
+  ##
+  getMasterTimeout: 90
+  ## @param sentinel.automateClusterRecovery Automate cluster recovery in cases where the last replica is not considered a good replica and Sentinel won't automatically failover to it.
+  ## This also prevents any new replica from starting until the last remaining replica is elected as master to guarantee that it is the one to be elected by Sentinel, and not a newly started replica with no data.
+  ## NOTE: This feature requires a "downAfterMilliseconds" value less or equal to 2000.
+  ##
+  automateClusterRecovery: false
+  ## @param sentinel.redisShutdownWaitFailover Whether the Redis&reg; master container waits for the failover at shutdown (in addition to the Redis&reg; Sentinel container).
+  ##
+  redisShutdownWaitFailover: true
+  ## Sentinel timing restrictions
+  ## @param sentinel.downAfterMilliseconds Timeout for detecting a Redis&reg; node is down
+  ## @param sentinel.failoverTimeout Timeout for performing a election failover
+  ##
+  downAfterMilliseconds: 60000
+  failoverTimeout: 180000
+  ## @param sentinel.parallelSyncs Number of replicas that can be reconfigured in parallel to use the new master after a failover
+  ##
+  parallelSyncs: 1
+  ## @param sentinel.extraEnvVars Array with extra environment variables to add to Redis&reg; Sentinel nodes
+  ## e.g:
+  extraEnvVars:
+    - name: FOO
+      value: "bar"
+  externalMaster:
+    enabled: false
+    host: ""
+    port: 6379
+  containerPorts:
+    sentinel: 26379
+  persistence:
+    enabled: false
+    storageClass: "gp2"
+    accessModes:
+      - ReadWriteOnce
+    size: 100Mi
+  ## Example:
+  # resources:
+  #   requests:
+  #     cpu: 2
+  #     memory: 512Mi
+  #   limits:
+  #     cpu: 3
+  #     memory: 1024Mi
+  service:
+    type: ClusterIP
+    ports:
+      redis: 6379
+      sentinel: 26379
+    nodePorts:
+      redis: ""
+      sentinel: ""
+    externalTrafficPolicy: Cluster
+    extraPorts: []
+    clusterIP: ""
+    createMaster: false
+
+  ## Redis&reg; master service parameters
+  ##
+  masterService:
+    enabled: false
+    type: ClusterIP
+    ports:
+      redis: 6379
+
+serviceBindings:
+  enabled: false
+## Network Policy configuration
+## ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+##
+networkPolicy:
+  enabled: true
+  allowExternal: true
+  allowExternalEgress: true
+
+## RBAC configuration
+rbac:
+  create: false
+serviceAccount:
+  create: true
+
+tls:
+  enabled: false
+  authClients: true
+  autoGenerated: false
+  existingSecret: ""
+  certificatesSecret: ""
+  certFilename: ""
+  certKeyFilename: ""
+  certCAFilename: ""
+  dhParamsFilename: ""
+
+volumePermissions:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/os-shell
+    tag: 12-debian-12-r27
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+  resourcesPreset: "nano"
+  # resources:
+  #   requests:
+  #     cpu: 2
+  #     memory: 512Mi
+  #   limits:
+  #     cpu: 3
+  #     memory: 1024Mi
+  containerSecurityContext:
+    seLinuxOptions: {}
+    runAsUser: 0
+
+## @section useExternalDNS Parameters
+##
+## @param useExternalDNS.enabled Enable various syntax that would enable external-dns to work.  Note this requires a working installation of `external-dns` to be usable.
+## @param useExternalDNS.additionalAnnotations Extra annotations to be utilized when `external-dns` is enabled.
+## @param useExternalDNS.annotationKey The annotation key utilized when `external-dns` is enabled. Setting this to `false` will disable annotations.
+## @param useExternalDNS.suffix The DNS suffix utilized when `external-dns` is enabled.  Note that we prepend the suffix with the full name of the release.
+##
+useExternalDNS:
+  enabled: true
+  suffix: ""
+  annotationKey: external-dns.alpha.kubernetes.io/
+  additionalAnnotations: {}

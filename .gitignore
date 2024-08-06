@@ -1,0 +1,7 @@
+infrastructure/.terraform/*
+infrastructure/.terraform.lock.hcl
+infrastructure/terraform.tfstate
+infrastructure/terraform.tfstate.backup
+applications/external-dns/secrets.yaml
+applications/external-dns/external_dns_secrets.yaml
+applications/redis-ha/redis_secrets.yaml

@@ -1,0 +1,12 @@
+kind: ServiceExport
+apiVersion: multicluster.x-k8s.io/v1alpha1
+metadata:
+  namespace: default
+  name: redis-cluster-1
+
+---
+kind: ServiceExport
+apiVersion: multicluster.x-k8s.io/v1alpha1
+metadata:
+  namespace: default
+  name: redis-cluster-1-headless

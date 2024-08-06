@@ -1,0 +1,74 @@
+image:
+  registry: docker.io
+  repository: bitnami/external-dns
+  tag: 0.14.2-debian-12-r7
+sources:
+  # - crd
+  - service
+  - ingress
+
+provider: aws
+containerPorts:
+  http: 7979
+
+validation:
+  enabled: true
+aws:
+  credentials:
+    secretKey: ""
+    accessKey: ""
+    ## Before external-dns 0.5.9 home dir should be `/root/.aws`
+    ##
+    mountPath: "/.aws"
+    ## @param aws.credentials.secretName Use an existing secret with key "credentials" defined.
+    ## This ignores aws.credentials.secretKey, and aws.credentials.accessKey
+    ##
+    secretName: ""
+    ## AWS access key id stored in key-value secret.
+    ## If aws.credentials.accessKeyIDSecretRef and aws.credentials.secretAccessKeySecretRef defined aws.credentials.secretKey, aws.credentials.accessKey and aws.credentials.secretName are ignored
+    ## @param aws.credentials.accessKeyIDSecretRef.name Define the name of the secret that stores aws_access_key_id.
+    ## @param aws.credentials.accessKeyIDSecretRef.key Define the key of the secret that stores aws_access_key_id.
+    ##
+    accessKeyIDSecretRef:
+      name: "external-dns-secret"
+      key: "accessKeyID"
+    secretAccessKeySecretRef:
+      name: "external-dns-secret"
+      key: "secretAccessKey"
+  region: "us-east-1"
+  ## @param aws.zoneType When using the AWS provider, filter for zones of this type (optional, options: public, private)
+  ##
+  zoneType: "private"
+  ## @param aws.preferCNAME When using the AWS provider, replaces Alias records with CNAME (options: true, false)
+  ##
+  preferCNAME: ""
+  zoneMatchParent: false
+
+txtOwnerId: "Z04497732MF9KUIW4DR2T"
+domainFilters: ["redis-ha.internal"]
+## @param excludeDomains Exclude subdomains (optional)
+##
+excludeDomains: []
+
+zoneNameFilters: []
+zoneIdFilters: []
+
+crd:
+  create: false
+  apiversion: ""
+  kind: ""
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    http: 7979
+
+serviceAccount:
+  create: true
+  name: ""
+rbac:
+  create: true
+  clusterRole: true
+resourcesPreset: "nano"
+resources: {}
