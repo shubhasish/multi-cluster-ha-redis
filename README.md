@@ -5,9 +5,7 @@ This repository helps to deploys the redis in a high availability setup across t
 
 ## System Architecture Diagram
 ### Architecture Diagram
-![Arch Diagram](./images/redis_ha.drawio.png)
-
-### Network Diagram
+![Arch Diagram](./images/redis_ha-redis_arch_diagram.drawio.png)
 
 ## Dependecies & Assumptions
 
