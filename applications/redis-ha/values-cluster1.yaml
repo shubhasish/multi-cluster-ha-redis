@@ -296,7 +296,7 @@ volumePermissions:
 ## @param useExternalDNS.suffix The DNS suffix utilized when `external-dns` is enabled.  Note that we prepend the suffix with the full name of the release.
 ##
 useExternalDNS:
-  enabled: true
+  enabled: false
   suffix: ""
   annotationKey: external-dns.alpha.kubernetes.io/
   additionalAnnotations: {}

@@ -114,3 +114,13 @@ resource "aws_eks_cluster" "demo_eks_cluster" {
     aws_iam_role_policy_attachment.eks_vpc_resource_controller,
   ]
 }
+
+resource "aws_security_group_rule" "demo-cluster-security-group-ingress" {
+  cidr_blocks       = [var.cross_vpc_cidr_block[0],var.vpc_cidr_block[0]]
+  description       = "Allow workstation to communicate with the cluster API Server"
+  from_port         = 0
+  protocol          = "-1"
+  security_group_id = aws_eks_cluster.demo_eks_cluster.vpc_config[0].cluster_security_group_id
+  to_port           = 0
+  type              = "ingress"
+}

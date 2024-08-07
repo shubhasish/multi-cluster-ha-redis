@@ -5,6 +5,13 @@ variable "region" {
 variable "env" {
   default = "develop"
 }
+terraform {
+  backend "s3" {
+    bucket = "panda-redis-demo"
+    key    = "state/terraform.tfstate"
+    region = "us-east-1"
+  }
+}
 
 provider "aws" {
   region = var.region

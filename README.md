@@ -124,7 +124,7 @@ This repository helps to deploys the redis in a high availability setup across t
     --approve
 
     export AWS_REGION=us-east-1
-    kubectl apply -k "github.com/aws/aws-cloud-map-mcs-controller-for-k8s/config/controller_install_release"
+    envsubst < MCS-controller/mcs_controller.yaml | kubectl apply -f -
 
     kubectl apply -f cluster-set/cluster1-property.yaml
 
@@ -151,7 +151,7 @@ This repository helps to deploys the redis in a high availability setup across t
     --approve
 
     export AWS_REGION=us-east-1
-    kubectl apply -k "github.com/aws/aws-cloud-map-mcs-controller-for-k8s/config/controller_install_release"
+    envsubst < MCS-controller/mcs_controller.yaml | kubectl apply -f -
 
     kubectl apply -f cluster-set/cluster2-property.yaml
 
