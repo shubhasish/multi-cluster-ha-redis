@@ -17,7 +17,7 @@ resource "aws_route_table" "private" {
   count  = signum(length(var.private_subnets))
 
   tags = {
-    Name        = "${var.name}-private-${element(split(",", var.azs), count.index)}"
+    Name        = "${var.name}-private-route-table"
     Environment = var.env
     managed_by  = "terraform"
   }
