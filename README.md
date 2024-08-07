@@ -209,7 +209,7 @@ This repository helps to deploys the redis in a high availability setup across t
     ```
     6) Check the exported service using the command `kubectl get serviceexport`
 
-7) Install external DNS in cluster 1
+7) Install external DNS in cluster 2
 
     1) Switch to the second cluster using the command `kubectl config use-context <second cluster context>`
     2) First create the AWS secrets (external_dns_secrets.yaml) file with the following content:
@@ -299,3 +299,21 @@ This repository helps to deploys the redis in a high availability setup across t
 5) **Regular Maintenance**:
 
     1) **Automated Updates**: Regular updates to Redis, Kubernetes, and Terraform configurations ensure that you benefit from the latest features and security patches. This proactive approach helps maintain the reliability and security of your infrastructure.
+
+## Cleanup
+1) Remove the service account 
+    ```
+    eksctl delete iamserviceaccount --cluster redis1-demo-cluster \
+    --namespace cloud-map-mcs-system \
+    --name cloud-map-mcs-controller-manager --approve
+
+    eksctl delete iamserviceaccount --cluster redis2-demo-cluster \
+    --namespace cloud-map-mcs-system \
+    --name cloud-map-mcs-controller-manager --approve
+    ```
+2) Remove the infrastructure using the following command
+    ```
+    ## Run these commands from the repository root directory
+    cd infrastucture
+    terraform destroy
+    ```
