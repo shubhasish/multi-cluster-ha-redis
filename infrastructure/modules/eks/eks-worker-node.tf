@@ -25,19 +25,19 @@ resource "aws_security_group" "eks_node_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = var.cross_vpc_cidr_block
-    self = true
+    self        = true
   }
 
   ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = var.vpc_cidr_block
-    self = true
+    self        = true
   }
   tags = {
     Name = "${var.name}-eks-node-sg"

@@ -49,19 +49,19 @@ resource "aws_security_group" "eks-cluster-sg" {
   }
 
   ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = var.cross_vpc_cidr_block
-    self = true
+    self        = true
   }
 
-    ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = var.vpc_cidr_block
-    self = true
+    self        = true
   }
 
   tags = {
@@ -103,7 +103,7 @@ resource "aws_eks_cluster" "demo_eks_cluster" {
   role_arn = aws_iam_role.eks_cluster_role.arn
 
   vpc_config {
-    subnet_ids = var.subnet_ids
+    subnet_ids         = var.subnet_ids
     security_group_ids = [aws_security_group.eks-cluster-sg.id]
   }
 

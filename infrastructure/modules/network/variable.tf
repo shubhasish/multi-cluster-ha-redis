@@ -15,13 +15,13 @@ variable "cidr" {
 
 variable "public_subnets" {
   description = "List of public subnets CIDR blocks"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
 variable "private_subnets" {
   description = "List of private subnets CIDR blocks"
-  type        = list
+  type        = list(any)
   default     = []
 }
 

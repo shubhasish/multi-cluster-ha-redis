@@ -7,5 +7,5 @@ resource "aws_route53_zone" "demo_cluster_route53_zone" {
 
 resource "aws_route53_zone_association" "demo_cluster_route53_zone_association" {
   zone_id = aws_route53_zone.demo_cluster_route53_zone.id
-  vpc_id = var.second_vpc_id
+  vpc_id  = var.second_vpc_id
 }

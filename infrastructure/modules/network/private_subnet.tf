@@ -46,7 +46,7 @@ resource "aws_route" "nat_gateway" {
 
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = "${element(aws_subnet.public.*.id, count.index)}"
+  subnet_id     = element(aws_subnet.public.*.id, count.index)
   count         = var.nat_gateways_count
   tags = {
     Name        = "${var.name}-nat"
