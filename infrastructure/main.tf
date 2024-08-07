@@ -81,11 +81,3 @@ module "eks2" {
   cross_vpc_cidr_block = ["10.5.0.0/16"]
   vpc_cidr_block       = ["10.6.0.0/16"]
 }
-
-output "route_table_id" {
-  value = module.vpc1.route_table_id
-}
-
-output "route_table_id2" {
-  value = module.vpc2.route_table_id
-}
